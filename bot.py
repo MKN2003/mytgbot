@@ -7,8 +7,10 @@ bot = telebot.TeleBot("7074864531:AAEyfbkKzGfbViiK7p9gKQoI5_Bc3-rlCh0")
 geolocator = Nominatim(user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
                                   "AppleWebKit/537.36 (KHTML, like Gecko) "
                                   "Chrome/123.0.0.0 Safari/537.36")
-db.add_product(pr_name="Капсула", pr_price=20000.00, pr_des="18.9L", pr_photo="https://en.hydrolife.uz/d/gallon.jpg")
-db.add_product(pr_name="Боклажка", pr_price=10000.00, pr_des="10L", pr_photo="https://orzon.uz/upload/iblock/3a0/3a09472d9f06ee46cdbe18dbc2ba572e.jpg")
+
+# db.add_product(pr_name="Капсула", pr_price=20000.00, pr_des="18.9L", pr_photo="https://en.hydrolife.uz/d/gallon.jpg")
+# db.add_product(pr_name="Боклажка", pr_price=10000.00, pr_des="10L", pr_photo="https://orzon.uz/upload/iblock/3a0/3a09472d9f06ee46cdbe18dbc2ba572e.jpg")
+
 
 @bot.message_handler(commands=["start"])
 def start(message):
@@ -50,6 +52,7 @@ def get_name(message):
 
 def get_phone_number(message, name):
     user_id = message.from_user.id
+
     if message.contact:
         phone_number = message.contact.phone_number
         print(phone_number)
@@ -62,6 +65,7 @@ def get_phone_number(message, name):
 
 def get_location(message, name, phone_number):
     user_id = message.from_user.id
+
     if message.location:
         longitude = message.location.longitude
         latitude = message.location.latitude
@@ -87,10 +91,12 @@ def for_call(call):
     if call.data == "back":
         bot.delete_message(user_id, call.message.message_id)
         bot.send_message(user_id, "Отправьте геолокацию или выберите адрес", reply_markup=bt.location_bt())
+
         bot.register_next_step_handler(call.message, get_location)
     elif call.data == "cart":
         pass
     else:
         pass
+
 
 bot.infinity_polling()

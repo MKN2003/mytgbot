@@ -56,7 +56,7 @@ def get_pr_id():
     sql = conn.cursor()
 
     all_products = sql.execute("SELECT pr_id, pr_name FROM PRODUCTS").fetchall()
-    actual_products = [(i[1], i[0]) for i in all_products]
+    actual_products = [(i[0], i[1]) for i in all_products]
 
     return actual_products
 
@@ -64,8 +64,10 @@ def get_pr_id():
 def get_all_id():
     conn = sqlite3.connect("database.db")
     sql = conn.cursor()
+
     all_id = sql.execute("SELECT pr_id FROM products;").fetchall()
     actual_id = [i[0] for i in all_id]
+
     return actual_id
 
 
@@ -83,6 +85,14 @@ def delete_user_cart(user_id):
     sql = conn.cursor()
 
     sql.execute("DELETE FROM cart WHERE user_id=?;", (user_id,))
+    conn.commit()
+
+
+def delete_product():
+    conn = sqlite3.connect("database.db")
+    sql = conn.cursor()
+
+    sql.execute("DELETE FROM products")
     conn.commit()
 
 

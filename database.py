@@ -7,7 +7,7 @@ sql.execute("CREATE TABLE IF NOT EXISTS users(user_id INTEGER, user_name TEXT, p
 sql.execute("CREATE TABLE IF NOT EXISTS products(pr_id INTEGER PRIMARY KEY AUTOINCREMENT, pr_name TEXT, "
             "pr_price REAL, pr_des TEXT, pr_photo TEXT);")
 sql.execute("CREATE TABLE IF NOT EXISTS cart(user_id INTEGER, pr_id INTEGER, pr_name TEXT, "
-            "pr_count INTEGER total_price REAL);")
+            "pr_count INTEGER, total_price REAL);")
 conn.commit()
 
 
@@ -61,6 +61,15 @@ def get_pr_id():
     return actual_products
 
 
+def get_product(pr_id):
+    conn = sqlite3.connect("database.db")
+    sql = conn.cursor()
+
+    exact_product = sql.execute("SELECT pr_name, pr_price, pr_des, pr_photo FROM products WHERE pr_id=?",
+                                (pr_id,)).fetchone()
+    return exact_product
+
+
 def get_all_id():
     conn = sqlite3.connect("database.db")
     sql = conn.cursor()
@@ -69,6 +78,23 @@ def get_all_id():
     actual_id = [i[0] for i in all_id]
 
     return actual_id
+
+
+def get_user_cart(user_id):
+    conn = sqlite3.connect("database.db")
+    sql = conn.cursor()
+
+    user_cart = sql.execute("SELECT pr_name, pr_count, total_price FROM cart WHERE user_id=?",
+                            (user_id,)).fetchall()
+    return user_cart
+
+
+def get_cart_id_name(user_id):
+    conn = sqlite3.connect("database.db")
+    sql = conn.cursor()
+
+    user_cart = sql.execute("SELECT pr_id, pr_name FROM cart WHERE user_id=?", (user_id,)).fetchall()
+    return user_cart
 
 
 def delete_exact_pr_from_cart(user_id, pr_id):
@@ -94,6 +120,7 @@ def delete_product():
 
     sql.execute("DELETE FROM products")
     conn.commit()
+
 
 
 sql.close()
